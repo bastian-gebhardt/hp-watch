@@ -14,7 +14,8 @@ import (
     "time"
 )
 
-var  version = "0.0.0"
+var version = "0.0.0"
+var buildDate string
 
 type node struct {
     name string
@@ -27,7 +28,7 @@ func main() {
     versionFlag := flag.Bool("version", false, "Shows the version")
     flag.Parse()
     if *versionFlag {
-        fmt.Printf("    Version: %s\n", version)
+        fmt.Printf("\n    Version   :    %s\n    Build date:    %s\n", version, buildDate)
         return
     }
 

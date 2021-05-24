@@ -6,11 +6,15 @@ PROGRAM_NAME=watch-hp
 INSTALL_DIR=$(HOME)/bin
 
 IS_GIT=$(shell git describe --tags --always || echo "false")
+GIT_STATUS=$(shell git status -s --porcelain || echo "false")
 
 # Build variables
-ifeq ("$(IS_GIT)","false")
+ifeq ("$(IS_GIT)", "false")
 VERSION 	?= "unknown"
 COMMIT_HASH ?= "unknown"
+else ifneq ("$(GIT_STATUS)", "")
+VERSION 	?= local_changes@$(shell git describe --tags --always)
+COMMIT_HASH ?= local_changes@$(shell git rev-parse --short HEAD 2>/dev/null)
 else
 VERSION 	?= $(shell git describe --tags --always)
 COMMIT_HASH ?= $(shell git rev-parse --short HEAD 2>/dev/null)
@@ -33,6 +37,7 @@ all: help
 .PHONY: clean
 clean: # clean all caches
 
+// TODO: git stash to build HEAD (and not local changes)
 .PHONY: build
 build: ## Build the binary
 	CGO_ENABLED=0 $(GOHOST) build -ldflags=$(LDFLAGS) -o $(PROGRAM_NAME) --mod=vendor ./cmd/$(PROGRAM_NAME)
