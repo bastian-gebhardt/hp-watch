@@ -1,0 +1,9 @@
+# github.com/robfig/cron v1.2.0
+## explicit
+github.com/robfig/cron
+# github.com/rs/zerolog v1.22.0
+## explicit
+github.com/rs/zerolog
+github.com/rs/zerolog/internal/cbor
+github.com/rs/zerolog/internal/json
+github.com/rs/zerolog/log
