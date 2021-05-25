@@ -17,6 +17,8 @@ import (
 var version = "0.0.0"
 var buildDate string
 
+var programID = "b3507fe0c5c387e072f5f89505c0b03ad35da51f"
+
 type node struct {
     name string
     child []*node
@@ -43,7 +45,7 @@ func main() {
     flag.Parse()
 
     if *versionFlag {
-        fmt.Printf("\n    Version   :    %s\n    Build date:    %s\n", version, buildDate)
+        fmt.Printf("\n    Version   :    %s\n    Build date:    %s\nProgramID :    %s\n", version, buildDate, programID)
         return
     }
 

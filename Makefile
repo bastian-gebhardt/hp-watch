@@ -3,6 +3,7 @@
 # TODO: pretty print INSTALL steps
 
 PROGRAM_NAME=hp-watch
+BUILD_DIR=./build
 INSTALL_DIR=$(HOME)/bin
 
 IS_GIT=$(shell git describe --tags --always || echo "false")
@@ -12,12 +13,15 @@ GIT_STATUS=$(shell git status -s --porcelain || echo "false")
 ifeq ("$(IS_GIT)", "false")
 VERSION 	?= "unknown"
 COMMIT_HASH ?= "unknown"
+PROJECT_REPO ?= "unset"
 else ifneq ("$(GIT_STATUS)", "")
 VERSION 	?= local_changes@$(shell git describe --tags --always)
 COMMIT_HASH ?= local_changes@$(shell git rev-parse --short HEAD 2>/dev/null)
+PROJECT_REPO ?= $(shell git remote get-url origin)
 else
 VERSION 	?= $(shell git describe --tags --always)
 COMMIT_HASH ?= $(shell git rev-parse --short HEAD 2>/dev/null)
+PROJECT_REPO ?= $(shell git remote get-url origin)
 endif
 
 BUILD_DATE 	?= $(shell date +%FT%T%z)
@@ -29,7 +33,7 @@ GOOS    ?= $(shell $(GO) env GOOS)
 GOARCH  ?= $(shell $(GO) env GOARCH)
 GOHOST  ?= GOOS=$(GOOS) GOARCH=$(GOARCH) $(GO)
 
-LDFLAGS ?= "-X main.version=$(VERSION) -X main.commitHash=${COMMIT_HASH} -X main.buildDate=${BUILD_DATE}"
+LDFLAGS ?= "-X main.version=$(VERSION) -X main.commitHash=${COMMIT_HASH} -X main.buildDate=${BUILD_DATE} -X main.projectRepository=${PROJECT_REPO}"
 
 .PHONY: all
 all: help
@@ -40,11 +44,11 @@ clean: # clean all caches
 // TODO: git stash to build HEAD (and not local changes)
 .PHONY: build
 build: ## Build the binary
-	CGO_ENABLED=0 $(GOHOST) build -ldflags=$(LDFLAGS) -o $(PROGRAM_NAME) --mod=vendor ./cmd/$(PROGRAM_NAME)
+	CGO_ENABLED=0 $(GOHOST) build -ldflags=$(LDFLAGS) -o $(BUILD_DIR)/$(PROGRAM_NAME) --mod=vendor ./cmd/$(PROGRAM_NAME)
 
 .PHONY: install
 install: ## Install tool
-	cp $(PROGRAM_NAME) $(INSTALL_DIR)/$(PROGRAM_NAME)
+	cp $(BUILD_DIR)/$(PROGRAM_NAME) $(INSTALL_DIR)/$(PROGRAM_NAME)
 
 .PHONY: uninstall
 uninstall: ## Uninstall tool
