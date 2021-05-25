@@ -2,7 +2,7 @@
 # TODO: check if git installed
 # TODO: pretty print INSTALL steps
 
-PROGRAM_NAME=watch-hp
+PROGRAM_NAME=hp-watch
 INSTALL_DIR=$(HOME)/bin
 
 IS_GIT=$(shell git describe --tags --always || echo "false")
