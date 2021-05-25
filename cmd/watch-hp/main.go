@@ -24,9 +24,24 @@ type node struct {
     entries []string
 }
 
+// TODO: remove outdated code (node parsing)
+// TODO: fill README.md
+// TODO: add tests
+// TODO: add linter support
+// TODO: add flags for bluetooth address and check period
+// TODO: add check if 'pacmd' is available
+// TODO: add config file support
+// TODO: add log file support
+// TODO: add parser for 'pacmd' output
+
 func main() {
     versionFlag := flag.Bool("version", false, "Shows the version")
+    flag.Usage = func() {
+        fmt.Printf("Usage of %s ---\n", os.Args[0])
+        flag.PrintDefaults()
+    }
     flag.Parse()
+
     if *versionFlag {
         fmt.Printf("\n    Version   :    %s\n    Build date:    %s\n", version, buildDate)
         return
