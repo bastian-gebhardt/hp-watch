@@ -1,4 +1,3 @@
 .idea/
-hp-watch
-build
-untracked
+/build
+/untracked
