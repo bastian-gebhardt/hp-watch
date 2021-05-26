@@ -89,6 +89,8 @@ func parseCommandLineFlags() config{
     case *checkPeriodFlag>59:
         log.Warn().Msgf("value of flag '--check' is '%v', but must be in range 1-59; autocorrect to: %v", *checkPeriodFlag, 59)
         cfg.checkPeriod = 59
+    default:
+        cfg.checkPeriod = *checkPeriodFlag
     }
 
     // TODO: validation needed
