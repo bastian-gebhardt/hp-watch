@@ -94,7 +94,7 @@ func parseCommandLineFlags() config{
     }
 
     // TODO: validation needed
-    cfg.bluetoothID = *bluetoothIDFlag
+    cfg.bluetoothID = strings.Replace(*bluetoothIDFlag, ":", "_", -1)
 
     cfg.versionFlag = *versionFlag
 
