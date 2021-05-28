@@ -24,6 +24,7 @@ type config struct {
     versionFlag bool
     bluetoothID string
     checkPeriod int
+    waitingTime int
 }
 
 // TODO: flag validation
@@ -61,6 +62,7 @@ func main() {
             log.Debug().Msgf("Headset %s is not active, nothing to do", cfg.bluetoothID)
         case strings.Contains(found, "active profile:"):
             log.Info().Msgf("Headset %s is active, but with wrong profile, will switch to 'a2dp_sink'", cfg.bluetoothID)
+            time.Sleep(time.Duration(cfg.waitingTime) * time.Second)
             setProfileForCard(index, "a2dp_sink")
         }
     })
@@ -74,6 +76,7 @@ func parseCommandLineFlags() config{
     versionFlag := flag.Bool("version", false, "Shows the version")
     bluetoothIDFlag := flag.String("id", "", "ID of bluetooth device (Format: XX:XX:XX:XX:XX:XX or XX_XX_XX_XX_XX_XX)")
     checkPeriodFlag := flag.Int("check", 5, "check period in seconds (default: 5)")
+    waitingTime := flag.Int("waiting", 0, "wait time bevore switch profile in secounds (default: 0)")
 
     flag.Usage = func() {
         fmt.Printf("Usage of %s:\n", os.Args[0])
@@ -93,10 +96,23 @@ func parseCommandLineFlags() config{
         cfg.checkPeriod = *checkPeriodFlag
     }
 
+    switch {
+    case *waitingTime<0:
+        log.Warn().Msgf("value of flag '--check' is '%v', but must be in range 0-59; autocorrect to: %v", *checkPeriodFlag, 0)
+        cfg.checkPeriod = 0
+    case *waitingTime>59:
+        log.Warn().Msgf("value of flag '--check' is '%v', but must be in range 0-59; autocorrect to: %v", *checkPeriodFlag, 59)
+        cfg.checkPeriod = 59
+    default:
+        cfg.checkPeriod = *waitingTime
+    }
+
     // TODO: validation needed
     cfg.bluetoothID = strings.Replace(*bluetoothIDFlag, ":", "_", -1)
 
     cfg.versionFlag = *versionFlag
+
+    cfg.waitingTime = *waitingTime
 
     return cfg
 }
